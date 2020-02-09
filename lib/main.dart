@@ -32,9 +32,11 @@ class _MyBeastsState extends State<MyBeasts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    body: Padding(
-      padding: EdgeInsets.all(16.0),
-      child: CarouselSlider(
+    body: SafeArea(
+      child:Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children:<Widget>[CarouselSlider(
           height: MediaQuery.of(context).size.height *.9,
           items: counter.map((i) {
             return Builder(
@@ -50,9 +52,9 @@ class _MyBeastsState extends State<MyBeasts> {
               },
             );
           }).toList(),
-        ),
+        )],
+      )
     ),
-        
     );
   }
 }
