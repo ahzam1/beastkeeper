@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyBeasts(title: 'Flutter Demo Home Page'),
+      home: MyBeasts(title: 'My Beasts'),
     );
   }
 }
@@ -28,8 +28,9 @@ class MyBeasts extends StatefulWidget {
 }
 
 class _MyBeastsState extends State<MyBeasts> {
-  //to be used for the carousel counter
+  //to be used to hold all expanded animals.
   var expanded = [];
+  //to be used for the carousel counter
   var counter = [0,1,2];
   var beasts = ["Ruff", "Meowth", "Spark"];
   var ages = ["4", "11", "9"];
@@ -39,12 +40,15 @@ class _MyBeastsState extends State<MyBeasts> {
   Widget build(BuildContext context) {
     return Scaffold(
     body: SafeArea(
+      //safe area to avoid rendering below status bars as some phones have notches.
       child:Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children:<Widget>[
+          
           Text("My Beasts", style:TextStyle(color: Colors.black, fontSize: 30)),
           const SizedBox(height:15),
+          //carousel slider to implemenet the scrolling cards, external package.
           CarouselSlider(
           height: MediaQuery.of(context).size.height *.85,
           items: counter.map((i) {
@@ -52,14 +56,12 @@ class _MyBeastsState extends State<MyBeasts> {
               builder: (BuildContext context) {
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal:7.5),
-                  decoration: BoxDecoration(
-                    
-                  ),
                   child:Stack(
-                  
+                  //stack to create the layout of the cards
                   children: <Widget>[
 
                   new ShaderMask( 
+                    // helps to create the slight vignette effect at the bottom. 
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: Image(
@@ -75,12 +77,14 @@ class _MyBeastsState extends State<MyBeasts> {
                         begin:Alignment.topCenter,
                         end:Alignment.bottomCenter,
                         colors: [Colors.white.withOpacity(0), Colors.black.withOpacity(0.9)],
-                        stops:[0.8,1],
+                        stops:[0.8,1], //start basically just a bit off the bottom and end at the bottom.
                       ).createShader(bounds);
                     },
                     blendMode: BlendMode.srcATop,
                   ),
+
                   new AnimatedPositioned(
+                    //animated for interaction, didn't want popups/new screens.
                     duration: Duration(milliseconds:400),
                     bottom:expanded.contains(i) ? 0 :-291,
                     left:0,
@@ -91,17 +95,21 @@ class _MyBeastsState extends State<MyBeasts> {
                       child:Stack(
                         children: <Widget>[
                         Positioned(
+                          //animal details
                           left: 15,
                           top: 50,
                           width:MediaQuery.of(context).size.width *.66,
                           child: Text(lipsum, style:TextStyle(color: Colors.white, fontSize: 20),),
                         ),
                         Positioned(
+                          //interaction buttons
                           bottom: 10,
                           right:110,
                           child:Row(
+                            //used a row to put them alll in a nice neat row.
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
+                            //gesture detectors because I initialyl wanted to be able to add longpress functions, but didn't have time to.
                             GestureDetector(
                               onTap: () => _openMaps(),
                               child: Image(image: AssetImage('assets/doctor.png'), height:35),
@@ -128,6 +136,7 @@ class _MyBeastsState extends State<MyBeasts> {
                     child:GestureDetector(
                         onTap: () => _expandDetails(i),
                         child: AnimatedCrossFade(
+                          //cross fade to alternate between the i and the x icon.
                           duration: Duration(milliseconds: 400),
                           firstChild:Image(
                                 height: 36,
@@ -171,6 +180,7 @@ class _MyBeastsState extends State<MyBeasts> {
 
   void _expandDetails(int id){
     //need to set state here to expand id'th animal details section.
+    // this works since build is recalled whenever state is updated.
     if(expanded.contains(id)){
       //remove it from the list
       setState(() {
@@ -184,6 +194,7 @@ class _MyBeastsState extends State<MyBeasts> {
     } 
   }
   void _openMaps() async{
+    //function to open google maps with the search query 'vets near me'
     const url = 'https://www.google.com/maps/search/?api=1&query=vets+near+me';
     if (await canLaunch(url)) {
       await launch(url);
