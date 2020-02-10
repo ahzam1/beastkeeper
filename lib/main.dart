@@ -82,7 +82,7 @@ class _MyBeastsState extends State<MyBeasts> {
                   ),
                   new AnimatedPositioned(
                     duration: Duration(milliseconds:400),
-                    bottom:expanded.contains(i) ? 0 :-290,
+                    bottom:expanded.contains(i) ? 0 :-291,
                     left:0,
                     child: Container(
                       height: 290,
