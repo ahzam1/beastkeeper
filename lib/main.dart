@@ -27,8 +27,10 @@ class MyBeasts extends StatefulWidget {
 
 class _MyBeastsState extends State<MyBeasts> {
   //to be used for the carousel counter
-  var counter = [1,2,3];
-  var beasts = ["Ruff", "Tabitha", "Spark"];
+  var counter = [0,1,2];
+  var beasts = ["Ruff", "Meowth", "Spark"];
+  var ages = ["4", "11", "9"];
+  var images = [new AssetImage("assets/dog.jpg"), new AssetImage("assets/cat.jpg"),new AssetImage("assets/golden.jpg")];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,17 +39,55 @@ class _MyBeastsState extends State<MyBeasts> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children:<Widget>[CarouselSlider(
-          height: MediaQuery.of(context).size.height *.9,
+          height: MediaQuery.of(context).size.height *.90,
           items: counter.map((i) {
             return Builder(
               builder: (BuildContext context) {
                 return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  margin: EdgeInsets.symmetric(horizontal:7.5),
                   decoration: BoxDecoration(
-                    color: Colors.amber
+                    
                   ),
-                  child: Text('text $i', style: TextStyle(fontSize: 16.0),)
+                  child:Stack(
+                  
+                  children: <Widget>[
+
+                    new ShaderMask(
+                          
+                          child: Image(
+                            height: MediaQuery.of(context).size.height,
+                            image: images[i],
+                            fit: BoxFit.cover,
+                          ),
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(
+                              begin:Alignment.topCenter,
+                              end:Alignment.bottomCenter,
+                              colors: [Colors.white.withOpacity(0), Colors.black.withOpacity(0.9)],
+                              stops: [
+                                0.8,
+                                1,
+                              ],
+                            ).createShader(bounds);
+                          },
+                          blendMode: BlendMode.srcATop,
+                        ),
+
+                  
+                  new Positioned(
+                    bottom: 4.0, 
+                    left: 10.0,
+                    child: RichText(
+                      text:TextSpan(
+                        text:beasts[i] + ', ',
+                        style: TextStyle(fontSize:32.0),
+                        children: <TextSpan>[
+                          TextSpan(text: ages[i], style: TextStyle(fontSize: 20, color: Colors.white70)),
+                        ]
+                      )
+                    ,)
+                  ),],
+                )
                 );
               },
             );
